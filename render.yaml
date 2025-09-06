@@ -1,17 +1,11 @@
 services:
   - type: static
     name: supa-chatbot
-    buildCommand: |
-      cd local-troika
-      npm install --legacy-peer-deps
-      npm run build
+    buildCommand: cd local-troika && npm install --legacy-peer-deps && npm run build
     publishDirectory: local-troika/dist
-    staticPublishPath: /
+    branch: main
     env: static
     routes:
       - type: rewrite
         source: /*
         destination: /index.html
-    envVars:
-      - key: NODE_ENV
-        value: production

@@ -7,8 +7,11 @@ export default defineConfig({
   build: {
     outDir: 'dist',
     assetsDir: 'assets',
-    sourcemap: true
+    sourcemap: false,
+    minify: true,
+    emptyOutDir: true
   },
+  base: '/',
   server: {
     port: 3000,
     strictPort: true
