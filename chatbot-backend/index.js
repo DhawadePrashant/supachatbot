@@ -13,8 +13,7 @@ const fs = require("fs");
 dotenv.config();
 const app = express();
 
-// Configure trust proxy for local development
-app.set('trust proxy', false);
+//this is test comment
 
 const uploadsDir = path.join(__dirname, "uploads");
 if (!fs.existsSync(uploadsDir)) {
@@ -57,7 +56,26 @@ console.log(
 );
 app.use("/chatbot-loader", express.static(reactStaticPathTroika));
 
+
+
+//Full Screen Widget
+
+console.log(
+  "Serving Troika React static files from:",
+  path.join(__dirname, "public/chatbot-loader")
+);
+const reactStaticPathFull = path.join(__dirname, "public/chatbot-loader");
+console.log(
+  "Does React Troika loaders.js exist at that path?",
+  fs.existsSync(path.join(staticPath, "full-loader.js"))
+);
+app.use("/chatbot-loader", express.static(reactStaticPathFull));
+
+
+
 connectDB();
+
+app.set("trust proxy", true); // change this to true in production
 
 app.use(morgan("combined"));
 
@@ -90,38 +108,36 @@ app.use(cors(dynamicCors));
 app.use(express.json({ limit: "100mb" }));
 app.use(express.urlencoded({ limit: "100mb", extended: true }));
 
-// 🔐 Configure rate limiting
-const createRateLimiter = (options) => rateLimit({
-  windowMs: options.windowMs || 60 * 1000, // default 1 minute
-  max: options.max || 100,
-  message: options.message || {
-    status: 429,
-    error: "Too many requests, please try again later."
-  },
-  standardHeaders: true,
-  legacyHeaders: false,
-  trustProxy: false,
-  keyGenerator: (req) => req.ip // Use IP-based limiting
-});
-
-// General API rate limiter
-const limiter = createRateLimiter({
-  windowMs: 60 * 1000, // 1 minute
+// 🔐 Apply rate limiter BEFORE your routes
+// Update your rate limiter configuration
+const limiter = rateLimit({
+  windowMs: 1 * 60 * 1000,
   max: 100,
   message: {
     status: 429,
-    error: "Whoa! You're chatting a bit too fast. Please wait and try again in a few minutes. ⏳"
-  }
+    error:
+      "Whoa! You're chatting a bit too fast. Please wait and try again in a few minutes. ⏳",
+  },
+  // Add this to fix the trust proxy issue
+  trustProxy: true,
+  standardHeaders: true,
+  legacyHeaders: false,
 });
 
-// Speech API rate limiter
-const speechLimiter = createRateLimiter({
-  windowMs: 60 * 1000, // 1 minute
+//this is test comment
+
+const speechLimiter = rateLimit({
+  windowMs: 1 * 60 * 1000,
   max: 10,
   message: {
     status: 429,
-    error: "Speech processing limit reached. Please wait a minute before trying again. 🎤"
-  }
+    error:
+      "Speech processing limit reached. Please wait a minute before trying again. 🎤",
+  },
+  // Add this to fix the trust proxy issue
+  trustProxy: true,
+  standardHeaders: true,
+  legacyHeaders: false,
 });
 
 // ✅ Apply limiter globally to all /api routes
@@ -174,6 +190,9 @@ app.use("/api/subscriptions", subscriptionRoutes);
 
 const ttsRoutes = require('./routes/text-to-speech');
 app.use('/api', ttsRoutes);
+
+const customizationsRoutes = require("./routes/customizations");
+app.use("/api/customizations", customizationsRoutes);
 
 
 app.use((req, res) => {

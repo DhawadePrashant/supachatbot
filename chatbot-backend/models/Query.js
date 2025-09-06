@@ -10,4 +10,6 @@ const querySchema = new mongoose.Schema({
   createdAt: { type: Date, default: Date.now },
 });
 
+querySchema.index({ chatbotId: 1, createdAt: -1 });
+
 module.exports = mongoose.model("Query", querySchema);

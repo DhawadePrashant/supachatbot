@@ -10,98 +10,10 @@ const defaultSuggestions = require("../constants/defaultSuggestions");
 const ClientConfig = require("../models/ClientConfig");
 const NotificationSettings = require("../models/NotificationSettings");
 
-// 🎭 GET persona
-exports.getPersona = async (req, res) => {
-  try {
-    console.log('Fetching persona for chatbot:', req.params.id);
-    const chatbot = await Chatbot.findById(req.params.id);
-    
-    if (!chatbot) {
-      console.log('Chatbot not found:', req.params.id);
-      return res.status(404).json({ message: "Chatbot not found" });
-    }
-
-    // Set cache control headers
-    res.set({
-      'Cache-Control': 'private, max-age=0, must-revalidate',
-      'ETag': JSON.stringify(chatbot.persona || {})
-    });
-
-    const defaultPersona = {
-      name: 'AI Assistant',
-      description: 'A helpful AI assistant',
-      avatar: null,
-      customInstructions: null
-    };
-
-    const persona = chatbot.persona || defaultPersona;
-    console.log('Returning persona:', persona);
-    res.json(persona);
-  } catch (error) {
-    console.error('Error fetching persona:', error);
-    res.status(500).json({ 
-      message: "Error fetching persona", 
-      error: error.message,
-      stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
-    });
-  }
-};
-
-// 🎭 UPDATE persona
-exports.updatePersona = async (req, res) => {
-  try {
-    console.log('Updating persona for chatbot:', req.params.id, 'with data:', req.body);
-    const chatbot = await Chatbot.findById(req.params.id);
-    
-    if (!chatbot) {
-      console.log('Chatbot not found for update:', req.params.id);
-      return res.status(404).json({ message: "Chatbot not found" });
-    }
-    
-    // Extract persona data from request body
-    const { persona } = req.body;
-    
-    if (!persona || typeof persona !== 'object') {
-      console.log('Invalid persona data received:', req.body);
-      return res.status(400).json({
-        message: "Invalid persona data format",
-        received: req.body
-      });
-    }
-
-    // Set default values if not provided
-    const updatedPersona = {
-      name: persona.name || 'AI Assistant',
-      description: persona.description || 'A helpful AI assistant',
-      avatar: persona.avatar || null,
-      customInstructions: persona.customInstructions || null
-    };
-    
-    chatbot.persona = {
-      ...chatbot.persona,
-      ...updatedPersona,
-      updatedAt: new Date()
-    };
-    
-    await chatbot.save();
-    
-    // Clear any existing cache
-    res.set('Cache-Control', 'no-cache');
-    
-    console.log('Updated persona:', chatbot.persona);
-    res.json(chatbot.persona);
-  } catch (error) {
-    console.error('Error updating persona:', error);
-    res.status(500).json({ 
-      message: "Error updating persona", 
-      error: error.message,
-      stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
-    });
-  }
-};
+// ✅ NEW: import customization model
+const ChatbotCustomization = require("../models/ChatbotCustomization");
 
 // 🟢 CREATE chatbot
-
 exports.createChatbot = async (req, res) => {
   try {
     const { companyId, name } = req.body;
@@ -149,6 +61,13 @@ exports.createChatbot = async (req, res) => {
       { upsert: true, new: true }
     );
 
+    // ✅ NEW: Seed default styling (uses schema defaults)
+    await ChatbotCustomization.findOneAndUpdate(
+      { chatbotId: chatbot._id },
+      { $setOnInsert: { chatbotId: chatbot._id } },
+      { upsert: true, new: true }
+    );
+
     // Assign default subscription
     const DEFAULT_PLAN_ID = "6870e8271b41fee9aa61f01a"; // Replace with actual ObjectId or config value
     const plan = await Plan.findById(DEFAULT_PLAN_ID);
@@ -170,7 +89,8 @@ exports.createChatbot = async (req, res) => {
     });
 
     res.status(201).json({
-      message: "Chatbot created with default plan and notification settings",
+      message:
+        "Chatbot created with default plan, notification settings, and styling",
       data: chatbot,
     });
   } catch (err) {
@@ -213,6 +133,9 @@ exports.deleteChatbot = async (req, res) => {
     await VerifiedUser.deleteMany({ chatbot_id: id });
     await Subscription.deleteMany({ chatbot_id: id });
     await NotificationSettings.deleteOne({ chatbotId: id }); // 👈 cleanup
+
+    // ✅ NEW: cleanup styling doc
+    await ChatbotCustomization.deleteOne({ chatbotId: id });
 
     res.status(200).json({ message: "Chatbot deleted" });
   } catch (err) {
@@ -378,5 +301,41 @@ exports.downloadChatbotReport = async (req, res) => {
   } catch (err) {
     console.error("Admin PDF download error:", err);
     res.status(500).json({ message: "Failed to generate report" });
+  }
+};
+
+// GET /chatbot/:id/persona
+exports.getPersona = async (req, res) => {
+  try {
+    const chatbot = await Chatbot.findById(req.params.id).select("persona_text name");
+    if (!chatbot) return res.status(404).json({ message: "Chatbot not found" });
+
+    res.json({ persona: chatbot.persona_text || "" }); // 👈 map to `persona` for frontend
+  } catch (err) {
+    console.error("getPersona error:", err);
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
+// PUT /chatbot/:id/persona
+exports.updatePersona = async (req, res) => {
+  try {
+    const { persona } = req.body; // frontend still sends `persona`
+    if (typeof persona !== "string") {
+      return res.status(400).json({ message: "Persona must be a string" });
+    }
+
+    const chatbot = await Chatbot.findByIdAndUpdate(
+      req.params.id,
+      { persona_text: persona }, // 👈 store in schema field
+      { new: true }
+    ).select("persona_text name");
+
+    if (!chatbot) return res.status(404).json({ message: "Chatbot not found" });
+
+    res.json({ message: "Persona updated", persona: chatbot.persona_text });
+  } catch (err) {
+    console.error("updatePersona error:", err);
+    res.status(500).json({ message: "Server error" });
   }
 };

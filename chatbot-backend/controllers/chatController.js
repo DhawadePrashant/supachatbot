@@ -196,7 +196,8 @@ exports.answerQuery = async (req, res) => {
       query,
       topContext,
       clientConfig,
-      historyContext
+      historyContext,
+      chatbotId
     );
 
     let finalAnswer = matchedLink

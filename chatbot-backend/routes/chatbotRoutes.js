@@ -10,7 +10,7 @@ const {
   getAllChatbotsWithStats,
   downloadChatbotReport,
   getPersona,
-  updatePersona
+  updatePersona,
 } = require("../controllers/chatbotController");
 
 const {
@@ -23,7 +23,7 @@ const {
   renewSubscription,
 } = require("../controllers/subscriptionController");
 
-const { protect, restrictTo, restrictToRoles } = require("../middleware/authMiddleware");
+const { protect, restrictTo, restrictToRoles } = require("../middleware/authMiddleware"); // ✅ NEW
 
 // Core chatbot routes
 router.post("/create", protect, restrictTo("admin"), createChatbot);
@@ -47,8 +47,8 @@ router.post("/:id/renew", protect, restrictTo("admin"), renewSubscription);
 router.get("/:id/config", getClientConfig);
 router.put("/:id/config", updateClientConfig);
 
-// Persona routes
-router.get("/:id/persona", getPersona);
-router.put("/:id/persona", updatePersona);
+
+router.get("/:id/persona", protect, restrictTo("admin"), getPersona);
+router.put("/:id/persona", protect, restrictTo("admin"), updatePersona);
 
 module.exports = router;

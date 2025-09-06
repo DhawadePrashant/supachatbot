@@ -4,48 +4,13 @@
   <meta charset="utf-8" />
   <title>Chat History PDF</title>
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      padding: 30px;
-      font-size: 13px;
-      color: #333;
-    }
-
-    h1 {
-      text-align: center;
-      color: #4f46e5;
-      margin-bottom: 20px;
-    }
-
-    .meta, .company {
-      font-size: 12px;
-      margin-bottom: 10px;
-      color: #666;
-    }
-
-    .chat-entry {
-      border-left: 4px solid #4f46e5;
-      background-color: #f4f6ff;
-      padding: 10px;
-      margin-bottom: 15px;
-    }
-
-    .sender {
-      font-weight: bold;
-      margin-bottom: 4px;
-    }
-
-    .timestamp {
-      font-size: 11px;
-      color: #888;
-    }
-
-    .footer {
-      margin-top: 40px;
-      font-size: 11px;
-      text-align: center;
-      color: #aaa;
-    }
+    body { font-family: Arial, sans-serif; padding: 30px; font-size: 13px; color: #333; }
+    h1 { text-align: center; color: #4f46e5; margin-bottom: 20px; }
+    .meta, .company { font-size: 12px; margin-bottom: 10px; color: #666; }
+    .chat-entry { border-left: 4px solid #4f46e5; background-color: #f4f6ff; padding: 10px; margin-bottom: 15px; }
+    .sender { font-weight: bold; margin-bottom: 4px; }
+    .timestamp { font-size: 11px; color: #888; }
+    .footer { margin-top: 40px; font-size: 11px; text-align: center; color: #aaa; }
   </style>
 </head>
 <body>
@@ -61,13 +26,27 @@
     </div>
   <% } %>
 
-  <p class="meta">Chat for user: <strong><%= user_email %></strong></p>
+  <% 
+    const contactValue = (typeof user_email !== 'undefined' && user_email) ? user_email 
+                       : (typeof user_phone !== 'undefined' && user_phone) ? user_phone 
+                       : null;
+    const contactType = (typeof user_email !== 'undefined' && user_email) ? 'Email'
+                      : (typeof user_phone !== 'undefined' && user_phone) ? 'Phone'
+                      : null;
+  %>
+
+  <% if (contactValue) { %>
+    <p class="meta">Chat for user (<%= contactType %>): <strong><%= contactValue %></strong></p>
+  <% } else { %>
+    <p class="meta"><em>No contact identifier provided.</em></p>
+  <% } %>
+
   <hr />
 
   <% if (messages && messages.length) { %>
     <% messages.forEach((msg) => { %>
       <div class="chat-entry">
-        <div class="sender"><%= msg.sender === 'user' ? 'You' : msg.sender %></div>
+        <div class="sender"><%= msg.sender === 'user' ? 'You' : (msg.sender || 'Bot') %></div>
         <div><%= msg.content %></div>
         <div class="timestamp"><%= new Date(msg.timestamp).toLocaleString() %></div>
       </div>
