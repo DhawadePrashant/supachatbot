@@ -1,17 +1,13 @@
 services:
   - type: static
     name: supa-chatbot
-    buildCommand: |
-      cd local-troika
-      npm install --legacy-peer-deps
-      npm run build
-      mkdir -p ../dist
-      cp -r dist/* ../dist/
-      ls -la ../dist
+    rootDir: local-troika
+    buildCommand: npm install --legacy-peer-deps && npm run build
     publishDirectory: dist
     branch: main
     env: static
-    routes:
-      - type: rewrite
-        source: /*
-        destination: /index.html
+    headers:
+      - source: /*
+        headers:
+          - key: Cache-Control
+            value: no-cache
