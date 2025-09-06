@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title><%= title %></title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        padding: 30px;
+        color: #333;
+      }
+      h1, h2 {
+        color: #003366;
+        margin-top: 30px;
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 10px;
+      }
+      th, td {
+        border: 1px solid #ddd;
+        padding: 8px;
+        font-size: 13px;
+      }
+      th {
+        background-color: #f2f2f2;
+        text-align: left;
+      }
+    </style>
+  </head>
+  <body>
+    <h1><%= title %></h1>
+    <p><strong>Generated on:</strong> <%= generatedOn %></p>
+
+    <h2>🏢 Company Details</h2>
+    <p><strong>Name:</strong> <%= company.name %></p>
+    <p><strong>Email:</strong> <%= company.email %></p>
+    <p><strong>Domain:</strong> <%= company.domain %></p>
+
+    <h2>📦 Plan Details</h2>
+    <p><strong>Plan:</strong> <%= plan.name %></p>
+    <p><strong>Duration:</strong> <%= plan.duration_days %> days</p>
+    <p><strong>Days Remaining:</strong> <%= plan.days_remaining %></p>
+    <p><strong>Max Users:</strong> <%= plan.max_users %></p>
+
+    <h2>📊 Usage Summary</h2>
+    <p><strong>Total Messages:</strong> <%= usage.total_messages %></p>
+    <p><strong>Unique Users:</strong> <%= usage.unique_users %></p>
+
+    <h2>💬 Message History (Last 100)</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Time</th>
+          <th>Sender</th>
+          <th>Message</th>
+          <th>Session ID</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% messages.forEach((msg) => { %>
+          <tr>
+            <td><%= new Date(msg.timestamp).toLocaleString() %></td>
+            <td><%= msg.sender %></td>
+            <td><%= msg.content %></td>
+            <td><%= msg.session_id %></td>
+          </tr>
+        <% }) %>
+      </tbody>
+    </table>
+  </body>
+</html>
