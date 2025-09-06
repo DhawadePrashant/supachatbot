@@ -22,11 +22,7 @@ import {
   FaVolumeMute,
   FaVideo,
   FaEllipsisV,
-  FaPaperclip,
-  FaSmile,
 } from "react-icons/fa";
-import { HiSearch, HiDotsVertical } from "react-icons/hi";
-import { IoClose } from "react-icons/io5";
 import { TypeAnimation } from "react-type-animation";
 import { IoSend } from "react-icons/io5";
 import { FiMic, FiSquare } from "react-icons/fi";
@@ -34,19 +30,21 @@ import ReactMarkdown from "react-markdown";
 import * as FaIcons from "react-icons/fa";
 
 const GlobalStyle = createGlobalStyle`
-  /* Telegram Background Pattern */
-  .telegram-pattern {
-    background: #b8d3a0;
+  /* WhatsApp Background Pattern */
+  .whatsapp-bg {
+    background-color: #e5ddd5;
     background-image: 
-      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='60' viewBox='0 0 60 60'%3E%3Cg fill-opacity='0.03'%3E%3Cpolygon fill='%23ffffff' points='36,1 37,5 31,5'/%3E%3Cpolygon fill='%23ffffff' points='14,5 15,1 9,1'/%3E%3Cpolygon fill='%23ffffff' points='12,25 13,29 7,29'/%3E%3Cpolygon fill='%23ffffff' points='34,23 35,27 29,27'/%3E%3Cpolygon fill='%23ffffff' points='16,43 17,47 11,47'/%3E%3Cpolygon fill='%23ffffff' points='32,41 33,45 27,45'/%3E%3C/g%3E%3C/svg%3E");
-    position: relative;
+      radial-gradient(circle at 25% 25%, rgba(195, 33, 33, 0.1) 1px, transparent 1px),
+      radial-gradient(circle at 75% 75%, rgba(255,255,255,0.1) 1px, transparent 1px);
+    background-size: 20px 20px;
+    background-position: 0 0, 10px 10px;
   }
 
   .dot-flashing {
     position: relative;
     width: 8px;
     height: 8px;
-    background-color: #999;
+    background-color: #888;
     border-radius: 50%;
     animation: dotFlashing 1s infinite linear alternate;
     animation-delay: 0s;
@@ -60,7 +58,7 @@ const GlobalStyle = createGlobalStyle`
     top: 0;
     width: 8px;
     height: 8px;
-    background-color: #999;
+    background-color: #888;
     border-radius: 50%;
   }
 
@@ -78,11 +76,11 @@ const GlobalStyle = createGlobalStyle`
 
   @keyframes dotFlashing {
     0% {
-      background-color: #ddd;
+      background-color: #ccc;
     }
     50%,
     100% {
-      background-color: #999;
+      background-color: #888;
     }
   }
 
@@ -332,20 +330,16 @@ const Chatbox = styled.div`
     max-height: 100vh;
     border-radius: 15px;
   }
-  
-  /* Ensure proper stacking */
-  z-index: 1000;
 `;
 
 const Header = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 8px 16px;
-  background: #ffffff;
+  padding: 12px 16px;
+  background: #075e54;
   flex-shrink: 0;
-  box-shadow: 0 1px 0 rgba(0, 0, 0, 0.08);
-  min-height: 56px;
+  box-shadow: 0 2px 3px rgba(0, 0, 0, 0.1);
 `;
 
 const HeaderLeft = styled.div`
@@ -353,21 +347,11 @@ const HeaderLeft = styled.div`
   align-items: center;
 `;
 
-const Avatar = styled.div`
-  width: 40px;
-  height: 40px;
+const Avatar = styled.img`
+  width: 40px !important;
+  height: 40px !important;
   border-radius: 50%;
-  background: #5ba632;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: white;
-  font-weight: 600;
-  font-size: 14px;
-  flex-shrink: 0;
-  position: absolute;
-  left: 0;
-  top: 0;
+  object-fit: cover;
 `;
 
 const StatusBlock = styled.div`
@@ -377,64 +361,61 @@ const StatusBlock = styled.div`
 `;
 
 const BotName = styled.div`
-  font-weight: 600;
-  color: #080808;
+  font-weight: 500;
+  color: white;
   font-size: 16px;
   line-height: 1.2;
 `;
 
 const Status = styled.div`
   font-size: 13px;
-  color: #010101;
+  color: rgba(255, 255, 255, 0.8);
   line-height: 1.2;
-  margin-top: 3px;
+  margin-top: 2px;
 `;
 
 const HeaderActionButton = styled.button`
-  background: rgba(0, 0, 0, 0.6);
+  background: transparent;
   border: none;
   cursor: pointer;
-  color: #ffffff;
-  font-size: 20px;
+  color: white;
+  font-size: 18px;
   display: flex;
   align-items: center;
   justify-content: center;
   width: 40px;
   height: 40px;
   border-radius: 50%;
-  transition: all 0.2s ease;
+  transition: background-color 0.2s;
   outline: none;
   
   svg {
-    color: #ffffff;
+    width: 18px;
+    height: 18px;
     fill: currentColor;
     stroke: currentColor;
   }
 
   &:hover {
-    background-color: rgba(0, 0, 0, 0.8);
-    transform: scale(1.05);
+    background-color: rgba(255, 255, 255, 0.1);
   }
 `;
 
 const CloseBtn = styled.div`
-  font-size: 30px;
-  font-weight: bold;
+  font-size: 24px;
+  font-weight: normal;
   cursor: pointer;
+  color: white;
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 50px;
-  height: 50px;
+  width: 40px;
+  height: 40px;
   border-radius: 50%;
-  transition: all 0.2s ease;
-
-  svg {
-    color: #000000;
-  }
+  transition: background-color 0.2s ease;
 
   &:hover {
-    transform: scale(1.05);
+    background-color: rgba(255, 255, 255, 0.1);
   }
 `;
 
@@ -462,7 +443,11 @@ const IconCircle = styled.div`
   width: 70px;
   height: 70px;
   border-radius: 50%;
-  background: #5288c1;
+  background: linear-gradient(
+    90deg,
+    hsla(344, 97%, 63%, 1) 0%,
+    hsla(232, 90%, 59%, 1) 100%
+  );
   display: flex;
   align-items: center;
   justify-content: center;
@@ -499,23 +484,19 @@ const Input = styled.input`
   max-width: 370px;
   padding: 1rem;
   font-size: 0.875rem;
-  border: 2px solid #3e4a56;
+  border: 2px solid #e0e0e0;
   border-radius: 12px;
   outline: none;
   margin-bottom: 1rem;
   transition: border-color 0.3s;
   text-align: center; /* Center placeholder and input text */
-  background: #2b5278;
-  color: #ffffff;
 
   &::placeholder {
     text-align: center; /* Specifically center placeholder */
-    color: #8596a8;
   }
 
   &:focus {
-    border-color: #5288c1;
-    background: #3e5c7a;
+    border-color: #a97fff;
   }
 `;
 
@@ -540,7 +521,11 @@ const Button = styled.button`
   font-weight: 600;
   border-radius: 12px;
   border: none;
-  background: #5288c1;
+  background: linear-gradient(
+    90deg,
+    hsla(344, 97%, 63%, 1) 0%,
+    hsla(232, 90%, 59%, 1) 100%
+  );
   color: white;
   cursor: pointer;
   margin-top: 0.5rem;
@@ -548,14 +533,13 @@ const Button = styled.button`
 
   &:not(:disabled):hover {
     transform: scale(1.03);
-    box-shadow: 0 8px 20px rgba(82, 136, 193, 0.3);
-    background: #4a7ba7;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.18);
+    opacity: 0.95;
   }
 
   &:disabled {
     opacity: 0.6;
     cursor: not-allowed;
-    background: #3e4a56;
   }
 
   .infinite-arrow {
@@ -579,16 +563,17 @@ const MessagesContainer = styled.div`
   flex: 1;
   overflow-y: auto;
   overflow-x: hidden;
-  padding: 0;
+  padding: 8px 12px;
   display: flex;
   flex-direction: column;
   min-height: 0;
   position: relative;
-  background: #b8d3a0;
-  background-image: 
-    url("/telegram-bg-img.jpg");
+  background-image: url("/image.png");
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
   
-  /* Add overlay for better readability */
+  /* Cream color overlay on top of background image */
   &::before {
     content: "";
     position: absolute;
@@ -596,7 +581,7 @@ const MessagesContainer = styled.div`
     left: 0;
     right: 0;
     bottom: 0;
-    background: rgba(184, 211, 160, 0.7);
+    background-color: rgba(229, 221, 213, 0.40); /* #e5ddd5 with transparency */
     pointer-events: none;
     z-index: 1;
   }
@@ -628,73 +613,64 @@ const MessagesContainer = styled.div`
 
 const InputContainer = styled.div`
   flex-shrink: 0;
-  padding: 12px 16px;
-  background: #ffffff;
+  padding: 8px 12px;
+  background: #f0f0f0;
   position: relative;
-  border-top: 1px solid #e1e8ed;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.1);
-  z-index: 10;
+  border-top: 1px solid #e0e0e0;
 `;
 
 const ChatInput = styled.input`
-  padding: 12px 18px;
+  padding: 10px 12px;
   border: 1px solid #ddd;
-  border-radius: 25px;
+  border-radius: 20px;
   font-size: 15px;
-  flex: 1;
+  width: 100%;
   outline: none;
-  background: #ffffff;
-  color: #000000;
-  transition: all 0.2s ease;
+  background: white;
+  transition: border-color 0.2s;
   
   &:focus {
-    border-color: #0088cc;
-    background: #ffffff;
+    border-color: #25d366;
   }
   
   &::placeholder {
-    color: #999999;
+    color: #999;
   }
 `;
 
 const MessageWrapper = styled.div`
   display: flex;
-  align-items: flex-start;
-  margin: ${(props) => (props.$isUser ? "6px 16px 6px 60px" : "6px 60px 6px 16px")};
+  align-items: flex-end;
+  margin: 4px 0;
   justify-content: ${(props) => (props.$isUser ? "flex-end" : "flex-start")};
-  gap: 8px;
-  position: relative;
 
   & > div {
     display: flex;
     flex-direction: column;
     align-items: ${(props) => (props.$isUser ? "flex-end" : "flex-start")};
-    max-width: 100%;
+    max-width: 75%;
   }
 `;
 
 const MessageBubble = styled.div`
-  background: ${(props) => (props.$isUser ? "#dcf8c6" : "#ffffff")};
-  border-radius: 12px;
+  background: ${(props) => (props.$isUser ? "#dcf8c6" : "white")};
+  border-radius: ${(props) => 
+    props.$isUser 
+      ? "18px 18px 4px 18px" 
+      : "18px 18px 18px 4px"
+  };
   padding: 8px 12px;
   font-size: 14px;
   line-height: 1.4;
   word-wrap: break-word;
   box-shadow: 0 1px 0.5px rgba(0, 0, 0, 0.13);
   position: relative;
-  margin: 0;
-  color: ${(props) => (props.$isUser ? "#000000" : "#000000")};
-  border: none;
-  max-width: 100%;
-  margin-left: ${(props) => (props.$isUser ? "0" : "48px")};
+  margin: ${(props) => (props.$isUser ? "0 0 0 50px" : "0 50px 0 0")};
 `;
 
 const Timestamp = styled.span`
   font-size: 11px;
-  color:rgb(80, 80, 80);
+  color: #999;
   margin-top: 2px;
   align-self: ${(props) => (props.$isUser ? "flex-end" : "flex-start")};
 `;
@@ -788,16 +764,7 @@ const TypingBubble = styled(MessageBubble)`
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 12px 16px;
-  background: #ffffff;
-  border: none;
-  
-  &::before {
-    left: -6px;
-    bottom: 0;
-    border-right-color: #ffffff;
-    border-bottom-color: #ffffff;
-  }
+  padding: 18px 16px;
 `;
 
 const glow = keyframes`
@@ -830,7 +797,7 @@ const Back = styled.div`
 const Shield = styled.div`
   width: 60px;
   height: 60px;
-  background: #5288c1;
+  background: linear-gradient(135deg, #a855f7, #ec4899);
   border-radius: 50%;
   margin: 0 auto 24px auto;
   display: flex;
@@ -840,7 +807,7 @@ const Shield = styled.div`
 `;
 
 const OtpTitle = styled.h2`
-  color: #5288c1;
+  color: #a855f7;
   margin: 0 0 8px 0;
   font-size: 24px;
   font-weight: 600;
@@ -854,7 +821,7 @@ const SubText = styled.p`
 `;
 
 const EmailText = styled.p`
-  color: #5288c1;
+  color: #a855f7;
   font-weight: 600;
   margin: 0 0 32px 0;
   font-size: 14px;
@@ -875,16 +842,16 @@ const OtpInputBox = styled.input`
   font-weight: 600;
   text-align: center;
   border-radius: 12px;
-  border: 2px solid #3e4a56;
-  background: #2b5278;
-  color: #ffffff;
+  border: 2px solid #e5e7eb;
+  background: #f9fafb;
+  color: #111827;
   outline: none;
   transition: all 0.2s ease;
 
   &:focus {
-    border-color: #5288c1;
-    background: #3e5c7a;
-    box-shadow: 0 0 0 3px rgba(82, 136, 193, 0.1);
+    border-color: #a855f7;
+    background: white;
+    box-shadow: 0 0 0 3px rgba(168, 85, 247, 0.1);
   }
 
   &::-webkit-outer-spin-button,
@@ -899,7 +866,7 @@ const OtpInputBox = styled.input`
 `;
 
 const VerifyButton = styled.button`
-  background: #5288c1;
+  background: linear-gradient(135deg, #a855f7, #ec4899);
   color: white;
   font-weight: 600;
   font-size: 14px;
@@ -913,38 +880,36 @@ const VerifyButton = styled.button`
 
   &:hover:not(:disabled) {
     transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(82, 136, 193, 0.3);
-    background: #4a7ba7;
+    box-shadow: 0 4px 12px rgba(168, 85, 247, 0.3);
   }
 
   &:disabled {
     opacity: 0.6;
     cursor: not-allowed;
     transform: none;
-    background: #3e4a56;
   }
 `;
 
 const ResendLink = styled.p`
-  color: #8596a8;
+  color: #666;
   font-size: 13px;
   margin: 0;
   line-height: 1.4;
 
   span {
-    color: #5288c1;
+    color: #a855f7;
     cursor: pointer;
     font-weight: 600;
     text-decoration: underline;
 
     &:hover {
-      color: #4a7ba7;
+      color: #9333ea;
     }
   }
 `;
 
 const SendButton = styled.button`
-  background: #0088cc;
+  background: #25d366;
   border: none;
   border-radius: 50%;
   width: 40px;
@@ -955,26 +920,24 @@ const SendButton = styled.button`
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  color: #ffffff;
+  color: white;
   transition: all 0.2s ease;
   flex-shrink: 0;
-  margin-left: 8px;
 
   svg {
     color: inherit;
     flex-shrink: 0;
-    font-size: 16px;
+    font-size: 18px;
   }
 
   &:hover:not(:disabled) {
-    background: #006699;
-    transform: scale(1.05);
+    background: #128c7e;
   }
 
   &:disabled {
     opacity: 0.6;
     cursor: not-allowed;
-    background: #cccccc;
+    background: #ccc;
   }
 `;
 
@@ -1054,18 +1017,18 @@ const ChatButton = styled.button`
 
 const VoiceButton = styled.button`
   background: ${(props) =>
-    props.$isRecording ? "#ef4444" : "transparent"};
+    props.$isRecording ? "#ef4444" : "#25d366"};
   border: none;
   border-radius: 50%;
-  width: 32px;
-  height: 32px;
-  min-width: 32px;
-  min-height: 32px;
+  width: 40px;
+  height: 40px;
+  min-width: 40px;
+  min-height: 40px;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  color: ${(props) => (props.$isRecording ? "white" : "#8b9aab")};
+  color: white;
   transition: all 0.2s ease;
   flex-shrink: 0;
   position: relative;
@@ -1095,17 +1058,17 @@ const VoiceButton = styled.button`
   svg {
     color: inherit;
     flex-shrink: 0;
-    font-size: 14px;
+    font-size: 18px;
   }
 
   &:hover:not(:disabled) {
-    background: ${(props) => (props.$isRecording ? "#dc2626" : "#f0f0f0")};
+    background: ${(props) => (props.$isRecording ? "#dc2626" : "#128c7e")};
   }
 
   &:disabled {
     opacity: 0.6;
     cursor: not-allowed;
-    background: #cccccc;
+    background: #ccc;
   }
 `;
 
@@ -1240,18 +1203,18 @@ const PlayButton = styled.button`
   background: none;
   border: none;
   cursor: pointer;
-  color: #666666;
+  color: #888;
   display: flex;
   align-items: center;
   padding: 2px;
   transition: color 0.2s ease;
 
   &:hover {
-    color: #4c9a2a;
+    color: #a855f7;
   }
 
   &:disabled {
-    color: #4c9a2a;
+    color: #a855f7;
     cursor: default;
   }
 `;
@@ -2255,29 +2218,55 @@ const SupaChatbot = ({ chatbotId, apiBase }) => {
           <Chatbox ref={chatboxRef}>
             <Header>
               <HeaderLeft>
+                <Avatar
+                  // src="https://raw.githubusercontent.com/troika-tech/Asset/refs/heads/main/Troika%203d%20logo.png"
+                  src="https://raw.githubusercontent.com/troika-tech/Asset/refs/heads/main/Supa%20Agent%20new.png"
+                  // src="https://raw.githubusercontent.com/troika-tech/Asset/refs/heads/main/Supa%20Agent%20Troika%20with%20bg.png"
+                  alt="avatar"
+                />
                 <StatusBlock>
                   <BotName>Supa Agent</BotName>
-                  <Status>11 members</Status>
+                  <Status>AI Assistant</Status>
                 </StatusBlock>
               </HeaderLeft>
-                <div
-                  style={{ display: "flex", alignItems: "center", gap: "8px" }}
+              <div
+                style={{ display: "flex", alignItems: "center", gap: "4px" }}
+              >
+                <HeaderActionButton title="Video Call">
+                  <FaVideo />
+                </HeaderActionButton>
+                
+                <HeaderActionButton title="Voice Call">
+                  <FaPhoneAlt />
+                </HeaderActionButton>
+                
+                <HeaderActionButton
+                  onClick={toggleMute}
+                  title={isMuted ? "Unmute" : "Mute"}
+                  aria-label={isMuted ? "Unmute voice" : "Mute voice"}
                 >
-                  <CloseBtn
-                    onClick={() => {
-                      if (audioObject) {
-                        audioObject.pause(); // optional: stop audio on close
-                      }
-                      if (chatboxRef.current) {
-                        chatboxRef.current.classList.add("closing");
-                        setTimeout(() => setShowChat(false), 500);
-                      } else {
-                        setShowChat(false);
-                      }
-                    }}
-                  >
-                    <IoClose size={22} />
-                  </CloseBtn>
+                  {isMuted ? <FaVolumeMute /> : <FaVolumeUp />}
+                </HeaderActionButton>
+
+                <HeaderActionButton title="Menu">
+                  <FaEllipsisV />
+                </HeaderActionButton>
+
+                <CloseBtn
+                  onClick={() => {
+                    if (audioObject) {
+                      audioObject.pause(); // optional: stop audio on close
+                    }
+                    if (chatboxRef.current) {
+                      chatboxRef.current.classList.add("closing");
+                      setTimeout(() => setShowChat(false), 500);
+                    } else {
+                      setShowChat(false);
+                    }
+                  }}
+                >
+                  ×
+                </CloseBtn>
               </div>
             </Header>
 
@@ -2414,12 +2403,10 @@ const SupaChatbot = ({ chatbotId, apiBase }) => {
                           key={idx}
                           $isUser={msg.sender === "user"}
                         >
-                          <div style={{ position: 'relative', width: '100%' }}>
-                            {msg.sender === "bot" && (
-                              <Avatar>
-                                SA
-                              </Avatar>
-                            )}
+                          {/* {msg.sender === "bot" && (
+              <BotAvatar src="https://raw.githubusercontent.com/troika-tech/Asset/refs/heads/main/Supa%20Agent%20new.png" />
+             )} */}
+                          <div>
                             <MessageBubble $isUser={msg.sender === "user"}>
                               {/* 👇 MODIFICATION START: Conditional rendering for typewriter effect */}
                               {msg.sender === "bot" &&
@@ -2503,14 +2490,10 @@ const SupaChatbot = ({ chatbotId, apiBase }) => {
 
                       {isTyping && (
                         <MessageWrapper $isUser={false}>
-                          <div style={{ position: 'relative', width: '100%' }}>
-                            <Avatar>
-                              SA
-                            </Avatar>
-                            <TypingBubble>
-                              <span className="dot-flashing"></span>
-                            </TypingBubble>
-                          </div>
+                          {/* <BotAvatar src="https://raw.githubusercontent.com/troika-tech/Asset/53e29e1748a7b203eaf3895581cfa4aac341f016/Supa%20Agent.svg" /> */}
+                          <TypingBubble>
+                            <span className="dot-flashing"></span>
+                          </TypingBubble>
                         </MessageWrapper>
                       )}
                       <div ref={endOfMessagesRef} />
@@ -2601,7 +2584,8 @@ const SupaChatbot = ({ chatbotId, apiBase }) => {
                               border: "none",
                               fontWeight: 700,
                               color: "#fff",
-                              background: "#4c9a2a",
+                              background:
+                                "linear-gradient(135deg, #a855f7, #ec4899)",
                             }}
                             aria-label="Verify yourself to continue chat"
                           >
@@ -2609,19 +2593,65 @@ const SupaChatbot = ({ chatbotId, apiBase }) => {
                           </button>
                         </div>
                       ) : (
-                        <>
+                        <div style={{ display: "flex", gap: 6, alignItems: "center" }}>
                           <ChatInput
                             value={message}
                             onChange={(e) => setMessage(e.target.value)}
                             onKeyDown={handleKeyPress}
-                            placeholder="Write a message..."
+                            placeholder="Type a message"
                           />
+                          <VoiceButton
+                            $isRecording={isRecording}
+                            onClick={handleMicClick}
+                            onTouchStart={handleMicTouchStart}
+                            onTouchEnd={handleMicTouchEnd}
+                            onMouseDown={handleMicMouseDown}
+                            onMouseUp={handleMicMouseUp}
+                          >
+                            {isRecording && !isMobile ? (
+                              <FiSquare size={18} />
+                            ) : (
+                              <FiMic size={18} />
+                            )}
+                          </VoiceButton>
                           <SendButton onClick={() => handleSendMessage()}>
-                            <IoSend size={16} />
+                            <IoSend />
                           </SendButton>
-                        </>
+                        </div>
                       )}
 
+                      {/* Instructions (hide when gated) */}
+
+                      <p
+                        style={{
+                          textAlign: "center",
+                          color: "#888",
+                          fontSize: "0.75rem",
+                          margin: "0.5rem 0 0 0",
+                        }}
+                      >
+                        <a
+                          href="https://troikatech.in/"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          style={{
+                            color: "inherit",
+                            textDecoration: "none",
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            gap: "0.25rem",
+                          }}
+                        >
+                          Powered by
+                          <img
+                            src="https://raw.githubusercontent.com/troikatechindia/Asset/refs/heads/main/logo.png"
+                            alt="Troika Tech Logo"
+                            style={{ height: "14px" }}
+                          />
+                          <strong>Troika Tech</strong>
+                        </a>
+                      </p>
                     </InputContainer>
                   </>
                 )}
