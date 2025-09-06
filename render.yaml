@@ -5,7 +5,9 @@ services:
       cd local-troika
       npm install --legacy-peer-deps
       npm run build
+      mkdir -p ../dist
       cp -r dist/* ../dist/
+      ls -la ../dist
     publishDirectory: dist
     branch: main
     env: static
