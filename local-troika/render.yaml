@@ -2,9 +2,13 @@ services:
   - type: web
     name: supa-chatbot
     env: static
+    rootDir: local-troika  # Specify the directory containing package.json
     buildCommand: npm install && npm run build
-    staticPublishPath: ./build
+    staticPublishPath: ./dist  # Since you're using Vite, the output directory is 'dist'
     routes:
       - type: rewrite
         source: /*
         destination: /index.html
+    envVars:
+      - key: NODE_ENV
+        value: production
