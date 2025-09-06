@@ -22,7 +22,11 @@ import {
   FaVolumeMute,
   FaVideo,
   FaEllipsisV,
+  FaPaperclip,
+  FaSmile,
 } from "react-icons/fa";
+import { HiSearch, HiDotsVertical } from "react-icons/hi";
+import { IoClose } from "react-icons/io5";
 import { TypeAnimation } from "react-type-animation";
 import { IoSend } from "react-icons/io5";
 import { FiMic, FiSquare } from "react-icons/fi";
@@ -30,21 +34,19 @@ import ReactMarkdown from "react-markdown";
 import * as FaIcons from "react-icons/fa";
 
 const GlobalStyle = createGlobalStyle`
-  /* WhatsApp Background Pattern */
-  .whatsapp-bg {
-    background-color: #e5ddd5;
+  /* Telegram Background Pattern */
+  .telegram-pattern {
+    background: #b8d3a0;
     background-image: 
-      radial-gradient(circle at 25% 25%, rgba(195, 33, 33, 0.1) 1px, transparent 1px),
-      radial-gradient(circle at 75% 75%, rgba(255,255,255,0.1) 1px, transparent 1px);
-    background-size: 20px 20px;
-    background-position: 0 0, 10px 10px;
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='60' viewBox='0 0 60 60'%3E%3Cg fill-opacity='0.03'%3E%3Cpolygon fill='%23ffffff' points='36,1 37,5 31,5'/%3E%3Cpolygon fill='%23ffffff' points='14,5 15,1 9,1'/%3E%3Cpolygon fill='%23ffffff' points='12,25 13,29 7,29'/%3E%3Cpolygon fill='%23ffffff' points='34,23 35,27 29,27'/%3E%3Cpolygon fill='%23ffffff' points='16,43 17,47 11,47'/%3E%3Cpolygon fill='%23ffffff' points='32,41 33,45 27,45'/%3E%3C/g%3E%3C/svg%3E");
+    position: relative;
   }
 
   .dot-flashing {
     position: relative;
     width: 8px;
     height: 8px;
-    background-color: #888;
+    background-color: #999;
     border-radius: 50%;
     animation: dotFlashing 1s infinite linear alternate;
     animation-delay: 0s;
@@ -58,7 +60,7 @@ const GlobalStyle = createGlobalStyle`
     top: 0;
     width: 8px;
     height: 8px;
-    background-color: #888;
+    background-color: #999;
     border-radius: 50%;
   }
 
@@ -76,11 +78,11 @@ const GlobalStyle = createGlobalStyle`
 
   @keyframes dotFlashing {
     0% {
-      background-color: #ccc;
+      background-color: #ddd;
     }
     50%,
     100% {
-      background-color: #888;
+      background-color: #999;
     }
   }
 
@@ -330,16 +332,20 @@ const Chatbox = styled.div`
     max-height: 100vh;
     border-radius: 15px;
   }
+  
+  /* Ensure proper stacking */
+  z-index: 1000;
 `;
 
 const Header = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 12px 16px;
-  background: #075e54;
+  padding: 8px 16px;
+  background: #ffffff;
   flex-shrink: 0;
-  box-shadow: 0 2px 3px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 1px 0 rgba(0, 0, 0, 0.08);
+  min-height: 56px;
 `;
 
 const HeaderLeft = styled.div`
@@ -347,11 +353,21 @@ const HeaderLeft = styled.div`
   align-items: center;
 `;
 
-const Avatar = styled.img`
-  width: 40px !important;
-  height: 40px !important;
+const Avatar = styled.div`
+  width: 40px;
+  height: 40px;
   border-radius: 50%;
-  object-fit: cover;
+  background: #5ba632;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-weight: 600;
+  font-size: 14px;
+  flex-shrink: 0;
+  position: absolute;
+  left: 0;
+  top: 0;
 `;
 
 const StatusBlock = styled.div`
@@ -361,61 +377,64 @@ const StatusBlock = styled.div`
 `;
 
 const BotName = styled.div`
-  font-weight: 500;
-  color: white;
+  font-weight: 600;
+  color: #080808;
   font-size: 16px;
   line-height: 1.2;
 `;
 
 const Status = styled.div`
   font-size: 13px;
-  color: rgba(255, 255, 255, 0.8);
+  color: #010101;
   line-height: 1.2;
-  margin-top: 2px;
+  margin-top: 3px;
 `;
 
 const HeaderActionButton = styled.button`
-  background: transparent;
+  background: rgba(0, 0, 0, 0.6);
   border: none;
   cursor: pointer;
-  color: white;
-  font-size: 18px;
+  color: #ffffff;
+  font-size: 20px;
   display: flex;
   align-items: center;
   justify-content: center;
   width: 40px;
   height: 40px;
   border-radius: 50%;
-  transition: background-color 0.2s;
+  transition: all 0.2s ease;
   outline: none;
   
   svg {
-    width: 18px;
-    height: 18px;
+    color: #ffffff;
     fill: currentColor;
     stroke: currentColor;
   }
 
   &:hover {
-    background-color: rgba(255, 255, 255, 0.1);
+    background-color: rgba(0, 0, 0, 0.8);
+    transform: scale(1.05);
   }
 `;
 
 const CloseBtn = styled.div`
-  font-size: 24px;
-  font-weight: normal;
+  font-size: 30px;
+  font-weight: bold;
   cursor: pointer;
-  color: white;
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 40px;
-  height: 40px;
+  width: 50px;
+  height: 50px;
   border-radius: 50%;
-  transition: background-color 0.2s ease;
+  transition: all 0.2s ease;
+
+  svg {
+    color: #000000;
+  }
 
   &:hover {
-    background-color: rgba(255, 255, 255, 0.1);
+    transform: scale(1.05);
   }
 `;
 
@@ -443,11 +462,7 @@ const IconCircle = styled.div`
   width: 70px;
   height: 70px;
   border-radius: 50%;
-  background: linear-gradient(
-    90deg,
-    hsla(344, 97%, 63%, 1) 0%,
-    hsla(232, 90%, 59%, 1) 100%
-  );
+  background: #5288c1;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -484,19 +499,23 @@ const Input = styled.input`
   max-width: 370px;
   padding: 1rem;
   font-size: 0.875rem;
-  border: 2px solid #e0e0e0;
+  border: 2px solid #3e4a56;
   border-radius: 12px;
   outline: none;
   margin-bottom: 1rem;
   transition: border-color 0.3s;
   text-align: center; /* Center placeholder and input text */
+  background: #2b5278;
+  color: #ffffff;
 
   &::placeholder {
     text-align: center; /* Specifically center placeholder */
+    color: #8596a8;
   }
 
   &:focus {
-    border-color: #a97fff;
+    border-color: #5288c1;
+    background: #3e5c7a;
   }
 `;
 
@@ -521,11 +540,7 @@ const Button = styled.button`
   font-weight: 600;
   border-radius: 12px;
   border: none;
-  background: linear-gradient(
-    90deg,
-    hsla(344, 97%, 63%, 1) 0%,
-    hsla(232, 90%, 59%, 1) 100%
-  );
+  background: #5288c1;
   color: white;
   cursor: pointer;
   margin-top: 0.5rem;
@@ -533,13 +548,14 @@ const Button = styled.button`
 
   &:not(:disabled):hover {
     transform: scale(1.03);
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.18);
-    opacity: 0.95;
+    box-shadow: 0 8px 20px rgba(82, 136, 193, 0.3);
+    background: #4a7ba7;
   }
 
   &:disabled {
     opacity: 0.6;
     cursor: not-allowed;
+    background: #3e4a56;
   }
 
   .infinite-arrow {
@@ -563,17 +579,16 @@ const MessagesContainer = styled.div`
   flex: 1;
   overflow-y: auto;
   overflow-x: hidden;
-  padding: 8px 12px;
+  padding: 0;
   display: flex;
   flex-direction: column;
   min-height: 0;
   position: relative;
-  background-image: url("./public/image.png");
-  background-repeat: no-repeat;
-  background-size: cover;
-  background-position: center;
+  background: #b8d3a0;
+  background-image: 
+    url("/telegram-bg-img.jpg");
   
-  /* Cream color overlay on top of background image */
+  /* Add overlay for better readability */
   &::before {
     content: "";
     position: absolute;
@@ -581,7 +596,7 @@ const MessagesContainer = styled.div`
     left: 0;
     right: 0;
     bottom: 0;
-    background-color: rgba(229, 221, 213, 0.40); /* #e5ddd5 with transparency */
+    background: rgba(184, 211, 160, 0.7);
     pointer-events: none;
     z-index: 1;
   }
@@ -613,64 +628,73 @@ const MessagesContainer = styled.div`
 
 const InputContainer = styled.div`
   flex-shrink: 0;
-  padding: 8px 12px;
-  background: #f0f0f0;
+  padding: 12px 16px;
+  background: #ffffff;
   position: relative;
-  border-top: 1px solid #e0e0e0;
+  border-top: 1px solid #e1e8ed;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.1);
+  z-index: 10;
 `;
 
 const ChatInput = styled.input`
-  padding: 10px 12px;
+  padding: 12px 18px;
   border: 1px solid #ddd;
-  border-radius: 20px;
+  border-radius: 25px;
   font-size: 15px;
-  width: 100%;
+  flex: 1;
   outline: none;
-  background: white;
-  transition: border-color 0.2s;
+  background: #ffffff;
+  color: #000000;
+  transition: all 0.2s ease;
   
   &:focus {
-    border-color: #25d366;
+    border-color: #0088cc;
+    background: #ffffff;
   }
   
   &::placeholder {
-    color: #999;
+    color: #999999;
   }
 `;
 
 const MessageWrapper = styled.div`
   display: flex;
-  align-items: flex-end;
-  margin: 4px 0;
+  align-items: flex-start;
+  margin: ${(props) => (props.$isUser ? "6px 16px 6px 60px" : "6px 60px 6px 16px")};
   justify-content: ${(props) => (props.$isUser ? "flex-end" : "flex-start")};
+  gap: 8px;
+  position: relative;
 
   & > div {
     display: flex;
     flex-direction: column;
     align-items: ${(props) => (props.$isUser ? "flex-end" : "flex-start")};
-    max-width: 75%;
+    max-width: 100%;
   }
 `;
 
 const MessageBubble = styled.div`
-  background: ${(props) => (props.$isUser ? "#dcf8c6" : "white")};
-  border-radius: ${(props) => 
-    props.$isUser 
-      ? "18px 18px 4px 18px" 
-      : "18px 18px 18px 4px"
-  };
+  background: ${(props) => (props.$isUser ? "#dcf8c6" : "#ffffff")};
+  border-radius: 12px;
   padding: 8px 12px;
   font-size: 14px;
   line-height: 1.4;
   word-wrap: break-word;
   box-shadow: 0 1px 0.5px rgba(0, 0, 0, 0.13);
   position: relative;
-  margin: ${(props) => (props.$isUser ? "0 0 0 50px" : "0 50px 0 0")};
+  margin: 0;
+  color: ${(props) => (props.$isUser ? "#000000" : "#000000")};
+  border: none;
+  max-width: 100%;
+  margin-left: ${(props) => (props.$isUser ? "0" : "48px")};
 `;
 
 const Timestamp = styled.span`
   font-size: 11px;
-  color: #999;
+  color:rgb(80, 80, 80);
   margin-top: 2px;
   align-self: ${(props) => (props.$isUser ? "flex-end" : "flex-start")};
 `;
@@ -764,7 +788,16 @@ const TypingBubble = styled(MessageBubble)`
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 18px 16px;
+  padding: 12px 16px;
+  background: #ffffff;
+  border: none;
+  
+  &::before {
+    left: -6px;
+    bottom: 0;
+    border-right-color: #ffffff;
+    border-bottom-color: #ffffff;
+  }
 `;
 
 const glow = keyframes`
@@ -797,7 +830,7 @@ const Back = styled.div`
 const Shield = styled.div`
   width: 60px;
   height: 60px;
-  background: linear-gradient(135deg, #a855f7, #ec4899);
+  background: #5288c1;
   border-radius: 50%;
   margin: 0 auto 24px auto;
   display: flex;
@@ -807,7 +840,7 @@ const Shield = styled.div`
 `;
 
 const OtpTitle = styled.h2`
-  color: #a855f7;
+  color: #5288c1;
   margin: 0 0 8px 0;
   font-size: 24px;
   font-weight: 600;
@@ -821,7 +854,7 @@ const SubText = styled.p`
 `;
 
 const EmailText = styled.p`
-  color: #a855f7;
+  color: #5288c1;
   font-weight: 600;
   margin: 0 0 32px 0;
   font-size: 14px;
@@ -842,16 +875,16 @@ const OtpInputBox = styled.input`
   font-weight: 600;
   text-align: center;
   border-radius: 12px;
-  border: 2px solid #e5e7eb;
-  background: #f9fafb;
-  color: #111827;
+  border: 2px solid #3e4a56;
+  background: #2b5278;
+  color: #ffffff;
   outline: none;
   transition: all 0.2s ease;
 
   &:focus {
-    border-color: #a855f7;
-    background: white;
-    box-shadow: 0 0 0 3px rgba(168, 85, 247, 0.1);
+    border-color: #5288c1;
+    background: #3e5c7a;
+    box-shadow: 0 0 0 3px rgba(82, 136, 193, 0.1);
   }
 
   &::-webkit-outer-spin-button,
@@ -866,7 +899,7 @@ const OtpInputBox = styled.input`
 `;
 
 const VerifyButton = styled.button`
-  background: linear-gradient(135deg, #a855f7, #ec4899);
+  background: #5288c1;
   color: white;
   font-weight: 600;
   font-size: 14px;
@@ -880,36 +913,38 @@ const VerifyButton = styled.button`
 
   &:hover:not(:disabled) {
     transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(168, 85, 247, 0.3);
+    box-shadow: 0 4px 12px rgba(82, 136, 193, 0.3);
+    background: #4a7ba7;
   }
 
   &:disabled {
     opacity: 0.6;
     cursor: not-allowed;
     transform: none;
+    background: #3e4a56;
   }
 `;
 
 const ResendLink = styled.p`
-  color: #666;
+  color: #8596a8;
   font-size: 13px;
   margin: 0;
   line-height: 1.4;
 
   span {
-    color: #a855f7;
+    color: #5288c1;
     cursor: pointer;
     font-weight: 600;
     text-decoration: underline;
 
     &:hover {
-      color: #9333ea;
+      color: #4a7ba7;
     }
   }
 `;
 
 const SendButton = styled.button`
-  background: #25d366;
+  background: #0088cc;
   border: none;
   border-radius: 50%;
   width: 40px;
@@ -920,24 +955,77 @@ const SendButton = styled.button`
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  color: white;
+  color: #ffffff;
   transition: all 0.2s ease;
   flex-shrink: 0;
+  margin-left: 8px;
 
   svg {
     color: inherit;
     flex-shrink: 0;
-    font-size: 18px;
+    font-size: 16px;
   }
 
   &:hover:not(:disabled) {
-    background: #128c7e;
+    background: #006699;
+    transform: scale(1.05);
   }
 
   &:disabled {
     opacity: 0.6;
     cursor: not-allowed;
-    background: #ccc;
+    background: #cccccc;
+  }
+`;
+
+const RecordButton = styled.button`
+  background: ${props => props.isRecording ? '#ff4444' : '#0088cc'};
+  border: none;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  min-width: 40px;
+  min-height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: #ffffff;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+  margin-left: 8px;
+  animation: ${props => props.isRecording ? 'pulse 1.5s ease-in-out infinite' : 'none'};
+
+  @keyframes pulse {
+    0% {
+      transform: scale(1);
+      box-shadow: 0 0 0 0 rgba(255, 68, 68, 0.7);
+    }
+    70% {
+      transform: scale(1.05);
+      box-shadow: 0 0 0 10px rgba(255, 68, 68, 0);
+    }
+    100% {
+      transform: scale(1);
+      box-shadow: 0 0 0 0 rgba(255, 68, 68, 0);
+    }
+  }
+
+  svg {
+    color: inherit;
+    flex-shrink: 0;
+    font-size: 16px;
+  }
+
+  &:hover:not(:disabled) {
+    background: ${props => props.isRecording ? '#ff6666' : '#006699'};
+    transform: scale(1.05);
+  }
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    background: #cccccc;
   }
 `;
 
@@ -1017,18 +1105,18 @@ const ChatButton = styled.button`
 
 const VoiceButton = styled.button`
   background: ${(props) =>
-    props.$isRecording ? "#ef4444" : "#25d366"};
+    props.$isRecording ? "#ef4444" : "transparent"};
   border: none;
   border-radius: 50%;
-  width: 40px;
-  height: 40px;
-  min-width: 40px;
-  min-height: 40px;
+  width: 32px;
+  height: 32px;
+  min-width: 32px;
+  min-height: 32px;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  color: white;
+  color: ${(props) => (props.$isRecording ? "white" : "#8b9aab")};
   transition: all 0.2s ease;
   flex-shrink: 0;
   position: relative;
@@ -1058,17 +1146,17 @@ const VoiceButton = styled.button`
   svg {
     color: inherit;
     flex-shrink: 0;
-    font-size: 18px;
+    font-size: 14px;
   }
 
   &:hover:not(:disabled) {
-    background: ${(props) => (props.$isRecording ? "#dc2626" : "#128c7e")};
+    background: ${(props) => (props.$isRecording ? "#dc2626" : "#f0f0f0")};
   }
 
   &:disabled {
     opacity: 0.6;
     cursor: not-allowed;
-    background: #ccc;
+    background: #cccccc;
   }
 `;
 
@@ -1203,18 +1291,18 @@ const PlayButton = styled.button`
   background: none;
   border: none;
   cursor: pointer;
-  color: #888;
+  color: #666666;
   display: flex;
   align-items: center;
   padding: 2px;
   transition: color 0.2s ease;
 
   &:hover {
-    color: #a855f7;
+    color: #4c9a2a;
   }
 
   &:disabled {
-    color: #a855f7;
+    color: #4c9a2a;
     cursor: default;
   }
 `;
@@ -1321,32 +1409,118 @@ const OtpInputComponent = ({ otp, setOtp }) => {
   );
 };
 
+const VoiceOverlayContainer = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 9998;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(8px);
+  opacity: ${props => props.isVisible ? 1 : 0};
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+`;
+
+const VoiceOverlayContent = styled.div`
+  text-align: center;
+  pointer-events: none;
+  .cosmic-circle {
+    position: relative;
+    width: 200px;
+    height: 200px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .pulse-ring {
+    position: absolute;
+    border: 2px solid transparent;
+    border-radius: 50%;
+    animation: pulse-expand 3s ease-out infinite;
+  }
+
+  .pulse-ring-1 {
+    width: 80px;
+    height: 80px;
+    border-color: rgba(96, 165, 250, 0.6);
+    animation-delay: 0s;
+  }
+
+  .pulse-ring-2 {
+    width: 120px;
+    height: 120px;
+    border-color: rgba(168, 85, 247, 0.4);
+    animation-delay: 1s;
+  }
+
+  .pulse-ring-3 {
+    width: 160px;
+    height: 160px;
+    border-color: rgba(255, 255, 255, 0.3);
+    animation-delay: 2s;
+  }
+
+  .cosmic-core {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: radial-gradient(circle, #ffffff 0%, #60a5fa 30%, #a855f7 70%, transparent 100%);
+    box-shadow: 
+      0 0 20px #60a5fa,
+      0 0 40px #a855f7,
+      0 0 60px #ffffff,
+      inset 0 0 20px rgba(255, 255, 255, 0.3);
+    animation: core-glow 2s ease-in-out infinite alternate;
+    z-index: 3;
+  }
+
+  @keyframes pulse-expand {
+    0% {
+      transform: scale(0.5);
+      opacity: 0.8;
+    }
+    50% {
+      opacity: 0.4;
+    }
+    100% {
+      transform: scale(1.2);
+      opacity: 0;
+    }
+  }
+
+  @keyframes core-glow {
+    0% {
+      transform: scale(0.9);
+      opacity: 0.8;
+      box-shadow: 
+        0 0 15px #60a5fa,
+        0 0 30px #a855f7,
+        0 0 45px #ffffff,
+        inset 0 0 15px rgba(255, 255, 255, 0.2);
+    }
+    100% {
+      transform: scale(1.1);
+      opacity: 1;
+      box-shadow: 
+        0 0 25px #60a5fa,
+        0 0 50px #a855f7,
+        0 0 75px #ffffff,
+        inset 0 0 25px rgba(255, 255, 255, 0.4);
+    }
+  }
+`;
+
 const VoiceOverlay = ({ isVisible }) => {
   return (
-    <div
-      style={{
-        position: "fixed",
-        top: 0,
-        left: 0,
-        right: 0,
-        bottom: 0,
-        zIndex: 9998, // Lower than buttons
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        background: "rgba(0, 0, 0, 0.5)",
-        backdropFilter: "blur(8px)",
-        opacity: isVisible ? 1 : 0,
-        pointerEvents: "none", // Allow clicks to pass through
-        transition: "opacity 0.3s ease",
-      }}
-    >
-      <div
-        style={{
-          textAlign: "center",
-          pointerEvents: "none",
-        }}
-      >
+    <VoiceOverlayContainer isVisible={isVisible}>
+      <VoiceOverlayContent>
         <div className="cosmic-circle">
           <div className="pulse-ring pulse-ring-1"></div>
           <div className="pulse-ring pulse-ring-2"></div>
@@ -1368,8 +1542,8 @@ const VoiceOverlay = ({ isVisible }) => {
             Use the stop button below to finish
           </p>
         </div>
-      </div>
-    </div>
+      </VoiceOverlayContent>
+    </VoiceOverlayContainer>
   );
 };
 
@@ -1392,6 +1566,9 @@ const SupaChatbot = ({ chatbotId, apiBase }) => {
   const [loadingOtp, setLoadingOtp] = useState(false);
   const [loadingVerify, setLoadingVerify] = useState(false);
   const [message, setMessage] = useState("");
+  const [isRecording, setIsRecording] = useState(false);
+  const [mediaRecorder, setMediaRecorder] = useState(null);
+  const [audioChunks, setAudioChunks] = useState([]);
   const [chatHistory, setChatHistory] = useState([
     {
       sender: "bot",
@@ -1406,9 +1583,7 @@ const SupaChatbot = ({ chatbotId, apiBase }) => {
   const [resendIntervalId, setResendIntervalId] = useState(null);
   // const [isEmailValid, setIsEmailValid] = useState(false);
   const [isPhoneValid, setIsPhoneValid] = useState(false);
-  const [isRecording, setIsRecording] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
-  const [mediaRecorder, setMediaRecorder] = useState(null);
   const [audioStream, setAudioStream] = useState(null);
   const [showEnquiryForm, setShowEnquiryForm] = useState(false);
   const [enquiryData, setEnquiryData] = useState({
@@ -1785,6 +1960,9 @@ const SupaChatbot = ({ chatbotId, apiBase }) => {
       container.scrollTop = container.scrollHeight;
     }
   }, []);
+
+  // Voice recording handlers are defined below with improved functionality
+  const audioRef = useRef(null);
 
   // Auto-scroll when new messages are added
   useEffect(() => {
@@ -2218,55 +2396,29 @@ const SupaChatbot = ({ chatbotId, apiBase }) => {
           <Chatbox ref={chatboxRef}>
             <Header>
               <HeaderLeft>
-                <Avatar
-                  // src="https://raw.githubusercontent.com/troika-tech/Asset/refs/heads/main/Troika%203d%20logo.png"
-                  src="https://raw.githubusercontent.com/troika-tech/Asset/refs/heads/main/Supa%20Agent%20new.png"
-                  // src="https://raw.githubusercontent.com/troika-tech/Asset/refs/heads/main/Supa%20Agent%20Troika%20with%20bg.png"
-                  alt="avatar"
-                />
                 <StatusBlock>
                   <BotName>Supa Agent</BotName>
-                  <Status>AI Assistant</Status>
+                  <Status>11 members</Status>
                 </StatusBlock>
               </HeaderLeft>
-              <div
-                style={{ display: "flex", alignItems: "center", gap: "4px" }}
-              >
-                <HeaderActionButton title="Video Call">
-                  <FaVideo />
-                </HeaderActionButton>
-                
-                <HeaderActionButton title="Voice Call">
-                  <FaPhoneAlt />
-                </HeaderActionButton>
-                
-                <HeaderActionButton
-                  onClick={toggleMute}
-                  title={isMuted ? "Unmute" : "Mute"}
-                  aria-label={isMuted ? "Unmute voice" : "Mute voice"}
+                <div
+                  style={{ display: "flex", alignItems: "center", gap: "8px" }}
                 >
-                  {isMuted ? <FaVolumeMute /> : <FaVolumeUp />}
-                </HeaderActionButton>
-
-                <HeaderActionButton title="Menu">
-                  <FaEllipsisV />
-                </HeaderActionButton>
-
-                <CloseBtn
-                  onClick={() => {
-                    if (audioObject) {
-                      audioObject.pause(); // optional: stop audio on close
-                    }
-                    if (chatboxRef.current) {
-                      chatboxRef.current.classList.add("closing");
-                      setTimeout(() => setShowChat(false), 500);
-                    } else {
-                      setShowChat(false);
-                    }
-                  }}
-                >
-                  ×
-                </CloseBtn>
+                  <CloseBtn
+                    onClick={() => {
+                      if (audioObject) {
+                        audioObject.pause(); // optional: stop audio on close
+                      }
+                      if (chatboxRef.current) {
+                        chatboxRef.current.classList.add("closing");
+                        setTimeout(() => setShowChat(false), 500);
+                      } else {
+                        setShowChat(false);
+                      }
+                    }}
+                  >
+                    <IoClose size={22} />
+                  </CloseBtn>
               </div>
             </Header>
 
@@ -2403,10 +2555,12 @@ const SupaChatbot = ({ chatbotId, apiBase }) => {
                           key={idx}
                           $isUser={msg.sender === "user"}
                         >
-                          {/* {msg.sender === "bot" && (
-              <BotAvatar src="https://raw.githubusercontent.com/troika-tech/Asset/refs/heads/main/Supa%20Agent%20new.png" />
-             )} */}
-                          <div>
+                          <div style={{ position: 'relative', width: '100%' }}>
+                            {msg.sender === "bot" && (
+                              <Avatar>
+                                SA
+                              </Avatar>
+                            )}
                             <MessageBubble $isUser={msg.sender === "user"}>
                               {/* 👇 MODIFICATION START: Conditional rendering for typewriter effect */}
                               {msg.sender === "bot" &&
@@ -2490,10 +2644,14 @@ const SupaChatbot = ({ chatbotId, apiBase }) => {
 
                       {isTyping && (
                         <MessageWrapper $isUser={false}>
-                          {/* <BotAvatar src="https://raw.githubusercontent.com/troika-tech/Asset/53e29e1748a7b203eaf3895581cfa4aac341f016/Supa%20Agent.svg" /> */}
-                          <TypingBubble>
-                            <span className="dot-flashing"></span>
-                          </TypingBubble>
+                          <div style={{ position: 'relative', width: '100%' }}>
+                            <Avatar>
+                              SA
+                            </Avatar>
+                            <TypingBubble>
+                              <span className="dot-flashing"></span>
+                            </TypingBubble>
+                          </div>
                         </MessageWrapper>
                       )}
                       <div ref={endOfMessagesRef} />
@@ -2584,8 +2742,7 @@ const SupaChatbot = ({ chatbotId, apiBase }) => {
                               border: "none",
                               fontWeight: 700,
                               color: "#fff",
-                              background:
-                                "linear-gradient(135deg, #a855f7, #ec4899)",
+                              background: "#4c9a2a",
                             }}
                             aria-label="Verify yourself to continue chat"
                           >
@@ -2593,65 +2750,38 @@ const SupaChatbot = ({ chatbotId, apiBase }) => {
                           </button>
                         </div>
                       ) : (
-                        <div style={{ display: "flex", gap: 6, alignItems: "center" }}>
+                        <>
                           <ChatInput
                             value={message}
                             onChange={(e) => setMessage(e.target.value)}
                             onKeyDown={handleKeyPress}
-                            placeholder="Type a message"
+                            placeholder="Write a message..."
                           />
-                          <VoiceButton
-                            $isRecording={isRecording}
-                            onClick={handleMicClick}
-                            onTouchStart={handleMicTouchStart}
-                            onTouchEnd={handleMicTouchEnd}
-                            onMouseDown={handleMicMouseDown}
-                            onMouseUp={handleMicMouseUp}
-                          >
-                            {isRecording && !isMobile ? (
-                              <FiSquare size={18} />
-                            ) : (
-                              <FiMic size={18} />
-                            )}
-                          </VoiceButton>
-                          <SendButton onClick={() => handleSendMessage()}>
-                            <IoSend />
-                          </SendButton>
-                        </div>
+                          {!isRecording ? (
+                            <>
+                              <RecordButton
+                                onClick={startRecording}
+                                isRecording={false}
+                                title="Start Recording"
+                              >
+                                <FiMic size={16} />
+                              </RecordButton>
+                              <SendButton onClick={() => handleSendMessage()}>
+                                <IoSend size={16} />
+                              </SendButton>
+                            </>
+                          ) : (
+                            <RecordButton
+                              onClick={stopRecording}
+                              isRecording={true}
+                              title="Stop Recording"
+                            >
+                              <FiSquare size={16} />
+                            </RecordButton>
+                          )}
+                        </>
                       )}
 
-                      {/* Instructions (hide when gated) */}
-
-                      <p
-                        style={{
-                          textAlign: "center",
-                          color: "#888",
-                          fontSize: "0.75rem",
-                          margin: "0.5rem 0 0 0",
-                        }}
-                      >
-                        <a
-                          href="https://troikatech.in/"
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          style={{
-                            color: "inherit",
-                            textDecoration: "none",
-                            display: "flex",
-                            alignItems: "center",
-                            justifyContent: "center",
-                            gap: "0.25rem",
-                          }}
-                        >
-                          Powered by
-                          <img
-                            src="https://raw.githubusercontent.com/troikatechindia/Asset/refs/heads/main/logo.png"
-                            alt="Troika Tech Logo"
-                            style={{ height: "14px" }}
-                          />
-                          <strong>Troika Tech</strong>
-                        </a>
-                      </p>
                     </InputContainer>
                   </>
                 )}
