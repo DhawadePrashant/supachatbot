@@ -9,9 +9,19 @@ export default defineConfig({
     assetsDir: 'assets',
     sourcemap: false,
     minify: true,
-    emptyOutDir: true
+    emptyOutDir: true,
+    chunkSizeWarningLimit: 1600,
+    rollupOptions: {
+      output: {
+        manualChunks(id) {
+          if (id.includes('node_modules')) {
+            return 'vendor';
+          }
+        }
+      }
+    }
   },
-  base: '/',
+  base: './',
   server: {
     port: 3000,
     strictPort: true
